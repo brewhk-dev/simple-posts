@@ -7,8 +7,13 @@ Schemata.Posts = new SimpleSchema({
 	author: {
 		type: String
 	},
+	createdAt: {
+		type: Number,
+		decimal: false
+	},
 	deletedAt: {
 		type: Number,
+		decimal: false,
 		optional: true
 	}
 });

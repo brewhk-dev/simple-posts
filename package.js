@@ -1,6 +1,6 @@
 Package.describe({
   name: 'brewhk:simple-post',
-  version: '0.1.0',
+  version: '0.2.0',
   summary: 'A simple twitteresque publishing library',
   git: 'https://github.com/brewhk/simple-post.git',
   documentation: 'README.md'

@@ -7,7 +7,8 @@ Meteor.methods({
 		return SimplePosts.insert({
 			_id: incrementCounter('simple_post_counter', 'postIds').toString(),
 			content: content,
-			author: this.userId
+			author: this.userId,
+			createdAt: getTimestampNow()
 		});
 	},
 	'simplePostGetPost': function (id) {
@@ -34,6 +35,69 @@ Meteor.methods({
 			author: author,
 			deletedAt: {
 				$exists: false
+			}
+		}).fetch();
+	},
+	'simplePostGetPostCountByAuthor': function (author) {
+		check(author, String);
+		return SimplePosts.find({
+			author: author,
+			deletedAt: {
+				$exists: false
+			}
+		}).count();
+	},
+	'simplePostGetPostsByAuthors': function (authors) {
+		check(author, [String]);
+		return SimplePosts.find({
+			author: {
+				$in: authors
+			},
+			deletedAt: {
+				$exists: false
+			}
+		}).fetch();
+	},
+	'simplePostGetPostCountByAuthors': function (authors) {
+		check(author, [String]);
+		return SimplePosts.find({
+			author: {
+				$in: authors
+			},
+			deletedAt: {
+				$exists: false
+			}
+		}).count();
+	},
+	'simplePostGetLatestPostsByAuthorWithLimit': function (author, limit) {
+		check(author, String);
+		check(limit, Number);
+		return SimplePosts.find({
+			author: author,
+			deletedAt: {
+				$exists: false
+			}
+		}, {
+			limit: limit,
+			sort: {
+				createdAt: -1
+			}
+		}).fetch();
+	},
+	'simplePostGetLatestPostsByAuthorsWithLimit': function (authors, limit) {
+		check(authors, [String]);
+		check(limit, Number);
+		return SimplePosts.find({
+			author: {
+				$in: authors
+			},
+			deletedAt: {
+				$exists: false
+			}
+		}, {
+			limit: limit,
+			sort: {
+				createdAt: -1
 			}
 		}).fetch();
 	},
@@ -71,6 +135,17 @@ Meteor.methods({
 			$set: {
 				deletedAt: getTimestampNow()
 			}
+		});
+	},
+	'simplePostDeleteOwnPosts': function () {
+		return SimplePosts.update({
+			author: this.userId
+		}, {
+			$set: {
+				deletedAt: getTimestampNow()
+			}
+		}, {
+			multi: true
 		});
 	}
 });

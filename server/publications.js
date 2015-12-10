@@ -28,6 +28,18 @@ Meteor.publish('simplePostsByAuthor', function (author) {
 	});
 });
 
+Meteor.publish('simplePostsByAuthors', function (authors) {
+	check(authors, [String]);
+	return SimplePosts.find({
+		author: {
+			$in: authors
+		},
+		deletedAt: {
+			$exists: false
+		}
+	});
+});
+
 Meteor.publish('simplePostsAll', function () {
 	if(ALLOW_GET_ALL_POSTS) {
 		return SimplePosts.find({
